@@ -4,40 +4,41 @@ import Tabela from './Assets/Tabela';
 import { useEffect, useState } from 'react';
 
 
-function Pacientes() {
+function Medicos() {
 
-  const paciente = {
-    cpf : '',
+  const medico = {
+    crm : '',
     nome : '',
     telefone: '',
     email: '',
+    especialidade: '',
     endereco: ''
 
   }
 
-  const pacienteAtt = {
+  const medicoAtt = {
     nome : '',
     telefone: '',
     endereco: ''
 
   }
 
-  const[pacientes, setPacientes] = useState([]);
-  const [objPaciente, setObjPaciente] = useState(paciente);
-  const [objPacienteAtt, setObjPacienteAtt] = useState(pacienteAtt);
+  const[medicos, setMedicos] = useState([]);
+  const [objMedico, setObjMedico] = useState(medico);
+  const [objMedicoAtt, setObjMedicoAtt] = useState(medicoAtt);
   const [btnCadastrar, setBtnCadastrar] = useState(true);
 
   const aoDigitar = (e) => {
-    setObjPaciente({...objPaciente, [e.target.name]:e.target.value});
+    setObjMedico({...objMedico, [e.target.name]:e.target.value});
   }
   const aoDigitarObj = (e) => {
-    setObjPacienteAtt({...objPacienteAtt, [e.target.name]:e.target.value});
+    setObjMedicoAtt({...objMedicoAtt, [e.target.name]:e.target.value});
   }
 
   const cadastrar = () => {
-    fetch("http://localhost:8080/pacientes",{
+    fetch("http://localhost:8080/medicos",{
       method:'post',
-      body:JSON.stringify(objPaciente),
+      body:JSON.stringify(objMedico),
       headers:{
         'Content-type':'application/json',
         'Accept':'application/json'
@@ -49,14 +50,14 @@ function Pacientes() {
       if (response_convertido.mensagem !== undefined){
         alert(response_convertido.mensagem);
       }else{
-        setPacientes([...pacientes, response_convertido])
+        setMedicos([...medicos, response_convertido])
         alert('cadastro realizado');
         limparFormulario();
       }
     })
   }  
   const deletar = (id) => {
-    fetch("http://localhost:8080/pacientes/" + id,{
+    fetch("http://localhost:8080/medicos/" + id,{
       method:'delete',
       headers:{
         'Content-type':'application/json',
@@ -67,37 +68,37 @@ function Pacientes() {
   //  .then(response_convertido => {
       //alert(response_convertido.mensagem);
 
-      let vetorTempo = [...pacientes];
+      let vetorTempo = [...medicos];
 
       let indice = vetorTempo.findIndex((p) => {
-        return p.cpf === objPaciente.cpf;
+        return p.cpf === objMedico.crm;
       });
 
       vetorTempo.slice(indice, 1);
 
-      setPacientes(vetorTempo)
+      setMedicos(vetorTempo)
 
       limparFormulario();
  //   })
   }  
  const atualizarSend = (id) => {
-  setObjPaciente(pacientes.find(p => {
-    return p.cpf === objPaciente.cpf;
+  setObjMedico(medicos.find(p => {
+    return p.cpf === objMedico.crm;
   }))
   
-    console.log(objPaciente);
+    console.log(objMedico);
   //setObjPacienteAtt();
   
-    fetch("http://localhost:8080/pacientes/" + objPaciente.cpf ,{
+    fetch("http://localhost:8080/medicos/" + objMedico.crm ,{
       method:'put',
-      body:JSON.stringify(objPacienteAtt),
+      body:JSON.stringify(objMedicoAtt),
       headers:{
         'Content-type':'application/json',
         'Accept':'application/json'
       }
     })
 
-    console.log(objPacienteAtt);
+    console.log(objMedicoAtt);
     //.then(response => response.json())
     //.then(response_convertido => {
 
@@ -111,7 +112,7 @@ function Pacientes() {
  
   }  
   const atualizar = (id) => {
-    objPaciente.cpf = id;
+    objMedico.crm = id;
     setBtnCadastrar(false);
   }
   const cancelar = () => {
@@ -119,24 +120,24 @@ function Pacientes() {
   }
 
   useEffect(()=>{
-    fetch("http://localhost:8080/pacientes")
+    fetch("http://localhost:8080/medicos")
     .then(lista => lista.json())
-    .then(listJson => setPacientes(listJson));
+    .then(listJson => setMedicos(listJson));
   }, []);
 
   const limparFormulario = () => {
-    setObjPaciente(paciente);
-    setObjPacienteAtt(pacienteAtt);
+    setObjMedico(medico);
+    setObjMedicoAtt(medicoAtt);
     setBtnCadastrar(true);
   }
 
 
   return (
     <div>
-      <Formulario botao={btnCadastrar} eventoTeclado={aoDigitar} eventoObj={aoDigitarObj} cadastrar={cadastrar} obj={objPaciente} objAtt={objPacienteAtt} cancelar={cancelar} atualizarSend={atualizarSend}/>
-      <Tabela vetor={pacientes}  deletar={deletar} atualizar={atualizar} />
+      <Formulario botao={btnCadastrar} eventoTeclado={aoDigitar} eventoObj={aoDigitarObj} cadastrar={cadastrar} obj={objMedico} objAtt={objMedicoAtt} cancelar={cancelar} atualizarSend={atualizarSend}/>
+      <Tabela vetor={medicos}  deletar={deletar} atualizar={atualizar} />
     </div>
   );
 }
 
-export default Pacientes;
+export default Medicos;
